@@ -87,7 +87,7 @@ Service Worker реализует:
 - удаление записей.
 
 ![PWA на ПК](2.jpg)
-!(3.jpg)
+![PWA на ПК](3.jpg)
 (4.jpg)
 (5.jpg)
 (6.jpg)
