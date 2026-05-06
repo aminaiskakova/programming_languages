@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Менеджер паролей</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" sizes="192x192" href="images/icon-192.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="images/icon-192.png" />
+
+  <style>
+    :root {
+      --bg-light: #fdf6f7;
+      --pink: #f4c2d6;
+      --pink-darker: #e9a3c2;
+      --pink-light: #f9e6f0;
+      --text: #333;
+      --border: #e0c8d4;
+    }
+    body {
+      background: var(--bg-light);
+      font-family: Arial, sans-serif;
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 1rem;
+      color: var(--text);
+    }
+    h1, h2 {
+      color: var(--pink-darker);
+      text-align: center;
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 1rem;
+      box-shadow: 0 3px 10px rgba(230, 180, 210, 0.2);
+      border: 1px solid var(--border);
+      margin-bottom: 1rem;
+    }
+    .form-group {
+      margin-bottom: 0.75rem;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 0.3rem;
+      font-weight: bold;
+      color: var(--pink-darker);
+    }
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 0.5rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--pink-light);
+    }
+    .btn {
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.95rem;
+      margin-right: 0.3rem;
+      margin-bottom: 0.3rem;
+    }
+    .btn-primary {
+      background: var(--pink-darker);
+      color: white;
+    }
+    .btn-primary:hover {
+      background: #d085aa;
+    }
+    .btn-secondary {
+      background: #e0c8d4;
+      color: var(--text);
+    }
+    .btn-secondary:hover {
+      background: #d0b0c4;
+    }
+    .password-list {
+      list-style: none;
+      padding: 0;
+    }
+    .password-item {
+      margin-bottom: 0.75rem;
+      padding: 0.75rem;
+      background: #f9e6f0;
+      border-radius: 10px;
+      border-left: 4px solid var(--pink-darker);
+    }
+    .password-item strong {
+      color: var(--pink-darker);
+    }
+    .password-item a {
+      color: var(--pink-darker);
+      text-decoration: none;
+    }
+    .password-item a:hover {
+      text-decoration: underline;
+    }
+    .password-controls {
+      margin-top: 0.5rem;
+    }
+    .password-controls button {
+      margin-right: 0.3rem;
+    }
+    .copy-popup {
+      position: fixed;
+      background: black;
+      color: white;
+      padding: 0.5rem 0.8rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: 1000;
+    }
+    #generator {
+      margin-bottom: 0.75rem;
+    }
+    #generator .form-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .checkbox-group {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .checkbox-group label {
+      margin: 0;
+      font-size: 0.9rem;
+    }
+  </style>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <h1>Менеджер паролей</h1>
+
+  <!-- Генератор паролей -->
+  <div class="card">
+    <h2>Генератор паролей</h2>
+    <div id="generator">
+      <div class="form-group">
+        <label>Длина пароля</label>
+        <input type="number" id="lengthInput" value="12" min="6" max="64" />
+      </div>
+      <div class="checkbox-group">
+        <label><input type="checkbox" id="lowerCheckbox" checked /> Строчные</label>
+        <label><input type="checkbox" id="upperCheckbox" checked /> Заглавные</label>
+        <label><input type="checkbox" id="numbersCheckbox" checked /> Цифры</label>
+        <label><input type="checkbox" id="specialCheckbox" checked /> Спецсимволы</label>
+      </div>
+      <div class="form-group">
+        <button id="generateBtn" class="btn btn-primary">Сгенерировать</button>
+      </div>
+      <div class="form-group">
+        <label>Сгенерированный пароль</label>
+        <input type="text" id="generatedPassword" readonly />
+      </div>
+    </div>
+  </div>
+
+  <!-- Форма добавления/редактирования -->
+  <div class="card">
+    <h2>Добавить / отредактировать пароль</h2>
+    <div id="form">
+      <div class="form-group">
+        <label>URL / Сервис</label>
+        <input type="text" id="urlInput" placeholder="например: mysite.com" />
+      </div>
+      <div class="form-group">
+        <label>Логин (email/имя пользователя)</label>
+        <input type="text" id="loginInput" placeholder="ваш логин" />
+      </div>
+      <div class="form-group">
+        <label>Пароль</label>
+        <input type="password" id="passwordInput" placeholder="пароль" />
+      </div>
+      <div class="form-group">
+        <button id="saveBtn" class="btn btn-primary">Сохранить</button>
+        <button id="useGeneratedBtn" class="btn btn-secondary">Использовать сгенерированный</button>
+      </div>
+    </div>
+  </div>
+
+  <hr />
+
+  <!-- Список паролей -->
+  <h2>Сохранённые пароли</h2>
+  <div id="passwordListContainer">
+    <ul id="passwordList"></ul>
+  </div>
+
+  <!-- Попап копирования -->
+  <div id="copyPopup" class="copy-popup">Скопировано в буфер обмена</div>
+</body>
+</html>
