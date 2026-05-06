@@ -14,7 +14,7 @@ lab2/
 ├── service-worker.js # Service Worker для кэширования ресурсов
 ├── icon.png # Иконка 192×192 для PWA
 └── README.md # Данный отчет
-
+```
 
 ## Реализованный функционал
 
